@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Analytics } from './components/analytics'
 import { CalendarView } from './components/calendar-view'
 import { DataTable } from './components/data-table'
-import {tableData} from './data/table-data'
+import {getTableData} from './data/table-data'
 import Search from '@/components/ui/search'
 import {
   Home,
@@ -373,7 +373,7 @@ useEffect(() => {
                 <CardTitle>Overview</CardTitle>
               </CardHeader>
               <CardContent className='ps-2'>
-                <DataTable data={tableData} />
+                <DataTable data={getTableData} />
               </CardContent>
             </Card>
             <Card className='col-span-1 lg:col-span-3'>

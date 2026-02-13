@@ -28,7 +28,13 @@ const LoginForm = () => {
   );
 
   localStorage.setItem("token", response.data.token);
-  navigate("/Dashboard");
+  
+  // Redirect based on user role
+  if (response.data.user.role === "admin") {
+    navigate("/Admin");
+  } else {
+    navigate("/Dashboard");
+  }
 
   setFormData({
     email: "",
