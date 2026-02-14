@@ -220,12 +220,6 @@ export class CodeExecutionService {
           }, 5000);
 
           result = executeFunction(testCase.input);
-          const timeoutId = setTimeout(() => {
-            console.log = originalLog;
-            reject(new Error('Execution timeout (5 seconds)'));
-          }, 5000);
-
-          result = executeFunction(testCase.input);
           
           clearTimeout(timeoutId);
           
