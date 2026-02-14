@@ -13,3 +13,4 @@ export async function getTableData() {
     return [];
   }
 }
+

@@ -8,6 +8,7 @@ import Dashboard from './dashboard'
 import { ThemeProvider } from './components/ui/components/theme-provider'
 import Admin from './admin'
 import NewProject from './admin/components/newProject'
+import CodeEditor from './dashboard/code'
 
 
 createRoot(document.getElementById('root')).render(
@@ -18,6 +19,7 @@ createRoot(document.getElementById('root')).render(
       <Route path='/Login' element={<Login/>}/>
       <Route path='/Signup' element={<Signup/>}/>
       <Route path='/Dashboard' element={<Dashboard/>}/>
+      <Route path='/CodeEditor/:questionId' element={<CodeEditor/>}/>
       <Route path='/Admin' element={<Admin/>}/>
       <Route path='/newProject' element={<NewProject/>}/>
     </Routes>

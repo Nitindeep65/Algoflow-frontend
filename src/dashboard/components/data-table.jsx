@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -21,6 +22,7 @@ export function DataTable() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const navigate = useNavigate();
   const itemsPerPage = 10;
 
   useEffect(() => {
@@ -28,10 +30,12 @@ export function DataTable() {
       setLoading(true);
       try {
         const questions = await getTableData();
-        setData(questions);
-        setFilteredData(questions);
+        setData(questions || []);
+        setFilteredData(questions || []);
       } catch (error) {
         console.error("Failed to load data:", error);
+        setData([]);
+        setFilteredData([]);
       } finally {
         setLoading(false);
       }
@@ -41,19 +45,24 @@ export function DataTable() {
   }, []);
 
   useEffect(() => {
+    if (!data || data.length === 0) {
+      setFilteredData([]);
+      return;
+    }
+    
     const filtered = data.filter((item) =>
       item.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.difficulty?.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    setFilteredData(filtered);
+    setFilteredData(filtered || []);
     setCurrentPage(1);
   }, [searchTerm, data]);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const paginatedData = filteredData.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const paginatedData = (filteredData || []).slice(startIndex, endIndex);
+  const totalPages = Math.ceil((filteredData || []).length / itemsPerPage);
 
   if (loading) {
     return (
@@ -95,6 +104,10 @@ export function DataTable() {
     setCompletedQuestions((prev) =>
       prev.includes(id) ? prev.filter((questionId) => questionId !== id) : [...prev, id]
     );
+  };
+
+  const handleQuestionSelect = (questionId) => {
+    navigate(`/CodeEditor/${questionId}`);
   };
 
   const getDifficultyColor = (difficulty) => {
@@ -156,11 +169,12 @@ export function DataTable() {
               {paginatedData.map((row, index) => (
                 <TableRow 
                   key={row.id} 
-                  className={`hover:bg-muted/50 transition-colors group ${
+                  className={`hover:bg-muted/50 transition-colors group cursor-pointer ${
                     completedQuestions.includes(row.id) ? 'bg-green-50 hover:bg-green-100' : ''
                   }`}
+                  onClick={() => handleQuestionSelect(row.id)}
                 >
-                  <TableCell className="pl-4">
+                  <TableCell className="pl-4" onClick={(e) => e.stopPropagation()}>
                     <Checkbox
                       checked={completedQuestions.includes(row.id)}
                       onCheckedChange={() => toggleCompletion(row.id)}
@@ -202,17 +216,20 @@ export function DataTable() {
         {paginatedData.map((row) => (
           <div 
             key={row.id}
-            className={`bg-background border rounded-lg p-4 space-y-3 shadow-sm ${
+            className={`bg-background border rounded-lg p-4 space-y-3 shadow-sm cursor-pointer hover:shadow-md transition-shadow ${
               completedQuestions.includes(row.id) ? 'bg-green-50 border-green-200' : ''
             }`}
+            onClick={() => handleQuestionSelect(row.id)}
           >
             <div className="flex items-start justify-between">
               <div className="flex items-start space-x-3 flex-1 min-w-0">
-                <Checkbox
-                  checked={completedQuestions.includes(row.id)}
-                  onCheckedChange={() => toggleCompletion(row.id)}
-                  className="mt-1 flex-shrink-0"
-                />
+                <div onClick={(e) => e.stopPropagation()}>
+                  <Checkbox
+                    checked={completedQuestions.includes(row.id)}
+                    onCheckedChange={() => toggleCompletion(row.id)}
+                    className="mt-1 flex-shrink-0"
+                  />
+                </div>
                 <div className="flex-1 min-w-0">
                   <h3 className={`font-medium text-sm leading-tight text-gray-900 pr-2 ${
                     completedQuestions.includes(row.id) ? 'line-through text-muted-foreground' : ''
@@ -244,8 +261,8 @@ export function DataTable() {
       {totalPages > 1 && (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-2">
           <div className="text-sm text-muted-foreground order-2 sm:order-1">
-            Showing {startIndex + 1} to {Math.min(endIndex, filteredData.length)} of{" "}
-            {filteredData.length} results
+            Showing {startIndex + 1} to {Math.min(endIndex, (filteredData || []).length)} of{" "}
+            {(filteredData || []).length} results
           </div>
           
           <div className="flex items-center gap-2 order-1 sm:order-2">
