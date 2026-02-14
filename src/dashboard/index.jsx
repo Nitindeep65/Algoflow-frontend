@@ -141,7 +141,7 @@ export function Dashboard() {
     const fetchUserData = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:5001/api/user/profile', { 
+        const response = await axios.get('https://algoflow-backend.onrender.com/api/user/profile', { 
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -156,7 +156,7 @@ export function Dashboard() {
                   
 useEffect(() => {
   const fetchCount = async () => {
-    const res = await axios.get("http://localhost:5001/api/user/count");
+    const res = await axios.get("https://algoflow-backend.onrender.com/api/user/count");
     console.log(res.data.count);
     setTotalUsers(res.data.count);
   };

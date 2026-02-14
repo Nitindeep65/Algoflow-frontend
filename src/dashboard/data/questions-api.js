@@ -1,8 +1,8 @@
-const API_BASE = "http://localhost:5001/api";
+const API_BASE = "https://algoflow-backend.onrender.com/api";
 
 export async function getQuestionById(id) {
   try {
-    const res = await fetch(`http://localhost:5001/api/questions/getQuestion/${id}`);
+    const res = await fetch(`https://algoflow-backend.onrender.com/api/questions/getQuestion/${id}`);
     
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);

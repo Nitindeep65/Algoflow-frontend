@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import axios from 'axios'
 
-const API_URL = "http://localhost:5001/api/auth/signup"; 
+const API_URL = "https://algoflow-backend.onrender.com/api/auth/signup"; 
 
 const SignupForm = () => {
   const [isVisible, setIsVisible] = useState(false)

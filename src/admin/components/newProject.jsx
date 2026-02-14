@@ -50,7 +50,7 @@ function NewProject() {
         }))
       }
       
-      const response = await axios.post('http://localhost:5001/api/questions/createQuestions', submitData);
+      const response = await axios.post('https://algoflow-backend.onrender.com/api/questions/createQuestions', submitData);
       console.log('Question created successfully:', response.data);
       
       setQuestion({

@@ -1,6 +1,6 @@
 export async function getTableData() {
   try {
-    const res = await fetch("http://localhost:5001/api/questions/getQuestions");
+    const res = await fetch("https://algoflow-backend.onrender.com/api/questions/getQuestions");
     
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);

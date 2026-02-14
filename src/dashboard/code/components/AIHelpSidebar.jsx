@@ -52,7 +52,7 @@ export function AIHelpSidebar({ isOpen, onClose, code, question, language }) {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:5001/api/ai/analyze-code', {
+      const response = await fetch('https://algoflow-backend.onrender.com/api/ai/analyze-code', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
