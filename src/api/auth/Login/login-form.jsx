@@ -11,11 +11,15 @@ const LoginForm = () => {
   const [isVisible, setIsVisible] = useState(false)
   const [formData, setFormData] = useState(
     { email: '', password: '', rememberMe: false })
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setError('')
+    setLoading(true)
     
     const loginData = {
       email : formData.email,
@@ -41,12 +45,28 @@ const LoginForm = () => {
     rememberMe: false,
   });
 } catch (error) {
-  console.log(error);
+  console.error('Login error:', error);
+  if (error.response) {
+    setError(error.response.data.message || 'Login failed. Please try again.');
+  } else if (error.request) {
+    setError('Cannot connect to server. Please check your connection.');
+  } else {
+    setError('An unexpected error occurred. Please try again.');
+  }
+} finally {
+  setLoading(false)
 }
   }
 
   return (
     <form className='space-y-5' onSubmit={handleSubmit}>
+      {/* Error Message */}
+      {error && (
+        <div className='bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded-lg text-sm'>
+          {error}
+        </div>
+      )}
+      
       {/* Email */}
       <div className='space-y-2'>
         <Label htmlFor='userEmail' className='text-sm font-medium'>
@@ -114,8 +134,13 @@ const LoginForm = () => {
         </a>
       </div>
 
-      <Button onClick={handleSubmit} className='w-full h-11 text-base font-medium' type='submit'>
-        Sign In
+      <Button 
+        onClick={handleSubmit} 
+        className='w-full h-11 text-base font-medium' 
+        type='submit'
+        disabled={loading}
+      >
+        {loading ? 'Signing in...' : 'Sign In'}
       </Button>
     </form>
   )
