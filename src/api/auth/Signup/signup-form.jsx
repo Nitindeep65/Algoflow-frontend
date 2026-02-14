@@ -44,7 +44,6 @@ const SignupForm = () => {
 const handleSubmit = async (e) => {
   e.preventDefault();
 
-  // Prevent double submission
   if (isSubmitting) {
     console.log('⚠️ Already submitting, ignoring duplicate request');
     return;

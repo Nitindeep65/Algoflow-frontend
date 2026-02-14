@@ -31,10 +31,8 @@ function CodePanel({ initialCode = '// Start coding here\nfunction solution() {\
   };
 
   const handleEditorDidMount = (editor, monaco) => {
-    // Configure Monaco Editor for better auto-completion
     monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
     
-    // Additional configurations for better IntelliSense
     monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
       target: monaco.languages.typescript.ScriptTarget.ES2020,
       allowNonTsExtensions: true,
@@ -48,7 +46,6 @@ function CodePanel({ initialCode = '// Start coding here\nfunction solution() {\
       typeRoots: ["node_modules/@types"]
     });
 
-    // Call parent onMount if provided
     if (onMount) {
       onMount(editor, monaco);
     }

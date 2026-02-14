@@ -1,8 +1,6 @@
-// Code execution service for running user code against test cases
 export class CodeExecutionService {
   static async executeCode(code, language, testCases) {
     try {
-      // Create a safe execution environment
       const results = [];
       
       for (let i = 0; i < testCases.length; i++) {
@@ -79,7 +77,6 @@ export class CodeExecutionService {
   static async executeJavaScript(code, testCase) {
     return new Promise((resolve, reject) => {
       try {
-        // Capture console.log output
         const logs = [];
         const originalLog = console.log;
         console.log = (...args) => {
@@ -87,29 +84,17 @@ export class CodeExecutionService {
         };
 
         try {
-          // Debug: Log the raw input
-          console.log('DEBUG: Raw testCase:', testCase);
-          console.log('DEBUG: testCase.input:', testCase.input);
-          console.log('DEBUG: Input type:', typeof testCase.input);
-          
-          // Parse input if it's a string representation
           let parsedInput = testCase.input;
           if (typeof testCase.input === 'string') {
             try {
               parsedInput = JSON.parse(testCase.input);
-              console.log('DEBUG: Parsed input:', parsedInput);
             } catch (e) {
-              console.log('DEBUG: JSON parse failed, using raw string');
               parsedInput = testCase.input;
             }
           }
           
-          // Execute the user's code in a controlled environment
           let result;
           
-          console.log('DEBUG: About to execute code:', code);
-          
-          // Create a proper execution context using Function constructor
           const executeFunction = new Function('testInput', `
             ${code}
             
@@ -126,26 +111,33 @@ export class CodeExecutionService {
             // Try different function patterns and return the result
             let result;
             
-            // Check for twoSum function specifically
+            let parsedInput = testInput;
+            if (typeof testInput === 'string') {
+              try {
+                parsedInput = JSON.parse(testInput);
+              } catch (e) {
+                parsedInput = testInput;
+              }
+            }
+            
+            let result;
+            
             if (typeof twoSum !== 'undefined') {
               let nums, target;
               
-              // Parse the input array - it should be like [[2,7,11,15], 9]
               if (Array.isArray(parsedInput) && parsedInput.length >= 2) {
-                nums = parsedInput[0];  // First element is the array
-                target = parsedInput[1]; // Second element is the target
+                nums = parsedInput[0];
+                target = parsedInput[1];
               } else if (Array.isArray(parsedInput) && parsedInput.length === 1) {
-                // If only one element, it might be nested
                 const nested = parsedInput[0];
                 if (Array.isArray(nested) && nested.length >= 2) {
                   nums = nested[0];
                   target = nested[1];
                 } else {
                   nums = parsedInput;
-                  target = 9; // Default for testing
+                  target = 9;
                 }
               } else {
-                // Default test case for Two Sum
                 nums = [2, 7, 11, 15];
                 target = 9;
               }
@@ -153,20 +145,6 @@ export class CodeExecutionService {
               return twoSum(nums, target);
             }
             
-            // Check for other common function names
-            if (typeof solution !== 'undefined') {
-              const func = solution;
-              const funcStr = func.toString();
-              const paramMatch = funcStr.match(/\\(([^)]*)\\)/);
-              const paramCount = paramMatch && paramMatch[1] ? 
-                paramMatch[1].split(',').filter(p => p.trim()).length : 0;
-              
-              if (paramCount === 1 && Array.isArray(parsedInput)) {
-                return func(parsedInput);
-              } else if (Array.isArray(parsedInput) && parsedInput.length > 1) {
-                return func(...parsedInput);
-              } else {
-                return func(parsedInput);
               }
             }
             
@@ -242,20 +220,15 @@ export class CodeExecutionService {
           }, 5000);
 
           result = executeFunction(testCase.input);
+          const timeoutId = setTimeout(() => {
+            console.log = originalLog;
+            reject(new Error('Execution timeout (5 seconds)'));
+          }, 5000);
+
+          result = executeFunction(testCase.input);
           
           clearTimeout(timeoutId);
-          console.log('DEBUG: Function result:', result);
-          console.log('DEBUG: Result type:', typeof result);
-          console.log('DEBUG: Result type:', typeof result);
           
-          // Restore console.log
-          console.log = originalLog;
-          
-          resolve({
-            output: result,
-            logs: logs.join('\n') || ''
-          });
-
         } catch (executeError) {
           console.log = originalLog;
           
@@ -309,7 +282,6 @@ export class CodeExecutionService {
   }
 
   static async simulateOtherLanguages(code, testCase, language) {
-    // Simulate other language execution with basic validation
     await new Promise(resolve => setTimeout(resolve, 150 + Math.random() * 300));
     
     try {
@@ -332,14 +304,13 @@ export class CodeExecutionService {
           hasValidStructure = code.includes('fn ') && (code.includes('main') || code.includes('return'));
           break;
         default:
-          hasValidStructure = code.trim().length > 10; // Basic check
+          hasValidStructure = code.trim().length > 10;
       }
       
       if (!hasValidStructure) {
         throw new Error(`${language} code structure appears incomplete`);
       }
       
-      // For demo: return expected result if code structure looks valid
       return {
         output: testCase.expected,
         logs: `${language} execution: processing input ${JSON.stringify(testCase.input)}`
@@ -403,7 +374,6 @@ export class CodeExecutionService {
       throw new Error('Code cannot be empty');
     }
 
-    // Remove comments and whitespace for analysis
     const cleanCode = code.replace(/\/\*[\s\S]*?\*\//g, '')
                          .replace(/\/\/.*$/gm, '')
                          .replace(/\s+/g, ' ')
@@ -419,7 +389,6 @@ export class CodeExecutionService {
         if (!cleanCode.includes('function') && !cleanCode.includes('=>') && !cleanCode.includes('=')) {
           throw new Error('No function definition found in JavaScript/TypeScript code');
         }
-        // Check for basic syntax
         if (cleanCode.includes('function') && !cleanCode.includes('return') && !cleanCode.includes('=>')) {
           throw new Error('Function should return a value. Add a return statement.');
         }

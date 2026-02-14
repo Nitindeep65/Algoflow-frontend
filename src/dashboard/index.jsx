@@ -7,21 +7,17 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Analytics } from './components/analytics'
 import { CalendarView } from './components/calendar-view'
 import { DataTable } from './components/data-table'
 import {getTableData} from './data/table-data'
-import Search from '@/components/ui/search'
 import {
   Home,
   BarChart3,
   Settings,
-  Users,
   FileText,
   Bell,
   Search as SearchIcon,
   ChevronRight,
-  SearchAlert,
 } from 'lucide-react'
 import {
   Sidebar,
@@ -58,23 +54,6 @@ const menuItems = [
     title: 'Overview',
     icon: Home,
     value: 'overview',
-  },
-  {
-    title: 'Analytics',
-    icon: BarChart3,
-    value: 'analytics',
-  },
-  {
-    title: 'Reports',
-    icon: FileText,
-    value: 'reports',
-    disabled: true,
-  },
-  {
-    title: 'Notifications',
-    icon: Bell,
-    value: 'notifications',
-    disabled: true,
   },
 ]
 
@@ -120,14 +99,6 @@ function AppSidebar({ user }) {
           <SidebarGroupLabel>Settings</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Users">
-                  <a href="#users">
-                    <Users className="h-4 w-4" />
-                    <span>Users</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Settings">
                   <a href="#settings">
@@ -222,7 +193,7 @@ useEffect(() => {
             <DialogHeader>
               <DialogTitle>Search Dashboard</DialogTitle>
               <DialogDescription>
-                Search for users, analytics, reports, and more...
+                Search for problems, users, reports, and more...
               </DialogDescription>
             </DialogHeader>
             <div className="relative mt-4">
@@ -251,20 +222,16 @@ useEffect(() => {
 
         <div className="flex-1 p-4 md:p-6">
           <Tabs defaultValue="overview" className="space-y-4">
-            <div className='mb-8 flex items-center justify-between'>
-                 <Search />
-              <TabsList>
-                <TabsTrigger value='overview'>Overview</TabsTrigger>
-                <TabsTrigger value='analytics'>Analytics</TabsTrigger>
-              </TabsList>
-            </div>
+            <TabsList>
+              <TabsTrigger value='overview'>Overview</TabsTrigger>
+            </TabsList>
 
         <TabsContent value='overview' className='space-y-4'>
           <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
             <Card>
               <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                 <CardTitle className='text-sm font-medium'>
-                  Total Revenue
+                  Problems Solved
                 </CardTitle>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
@@ -276,13 +243,13 @@ useEffect(() => {
                   strokeWidth='2'
                   className='h-4 w-4 text-muted-foreground'
                 >
-                  <path d='M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6' />
+                  <path d='M20 6 9 17l-5-5' />
                 </svg>
               </CardHeader>
               <CardContent>
-                <div className='text-2xl font-bold'>$45,231.89</div>
+                <div className='text-2xl font-bold'>127</div>
                 <p className='text-xs text-muted-foreground'>
-                  +20.1% from last month
+                  +12 from last week
                 </p>
               </CardContent>
             </Card>
@@ -290,7 +257,58 @@ useEffect(() => {
             <Card>
               <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                 <CardTitle className='text-sm font-medium'>
-                  Subscriptions
+                  Daily Streak
+                </CardTitle>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  stroke='currentColor'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth='2'
+                  className='h-4 w-4 text-muted-foreground'
+                >
+                  <path d='M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z' />
+                </svg>
+              </CardHeader>
+              <CardContent>
+                <div className='text-2xl font-bold'>15 Days</div>
+                <p className='text-xs text-muted-foreground'>
+                  Keep it up! 🔥
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+                <CardTitle className='text-sm font-medium'>Success Rate</CardTitle>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  stroke='currentColor'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth='2'
+                  className='h-4 w-4 text-muted-foreground'
+                >
+                  <path d='M22 11.08V12a10 10 0 1 1-5.93-9.14' />
+                  <polyline points='22 4 12 14.01 9 11.01' />
+                </svg>
+              </CardHeader>
+              <CardContent>
+                <div className='text-2xl font-bold'>84.2%</div>
+                <p className='text-xs text-muted-foreground'>
+                  +5.2% from last week
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+                <CardTitle className='text-sm font-medium'>
+                  Total Users
                 </CardTitle>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
@@ -308,60 +326,9 @@ useEffect(() => {
                 </svg>
               </CardHeader>
               <CardContent>
-                <div className='text-2xl font-bold'>+2350</div>
-                <p className='text-xs text-muted-foreground'>
-                  +180.1% from last month
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                <CardTitle className='text-sm font-medium'>Sales</CardTitle>
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  viewBox='0 0 24 24'
-                  fill='none'
-                  stroke='currentColor'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  strokeWidth='2'
-                  className='h-4 w-4 text-muted-foreground'
-                >
-                  <rect width='20' height='14' x='2' y='5' rx='2' />
-                  <path d='M2 10h20' />
-                </svg>
-              </CardHeader>
-              <CardContent>
-                <div className='text-2xl font-bold'>+12,234</div>
-                <p className='text-xs text-muted-foreground'>
-                  +19% from last month
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                <CardTitle className='text-sm font-medium'>
-                  Active Now
-                </CardTitle>
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  viewBox='0 0 24 24'
-                  fill='none'
-                  stroke='currentColor'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  strokeWidth='2'
-                  className='h-4 w-4 text-muted-foreground'
-                >
-                  <path d='M22 12h-4l-3 9L9 3l-3 9H2' />
-                </svg>
-              </CardHeader>
-              <CardContent>
                 <div className='text-2xl font-bold'>{totalUsers}</div>
                 <p className='text-xs text-muted-foreground'>
-                  +201 since last hour
+                  Registered on platform
                 </p>
               </CardContent>
             </Card>
@@ -370,7 +337,10 @@ useEffect(() => {
           <div className='grid grid-cols-1 gap-4 lg:grid-cols-7'>
             <Card className='col-span-1 lg:col-span-4'>
               <CardHeader>
-                <CardTitle>Overview</CardTitle>
+                <CardTitle>DSA Problems</CardTitle>
+                <CardDescription>
+                  Browse and solve data structures & algorithms problems
+                </CardDescription>
               </CardHeader>
               <CardContent className='ps-2'>
                 <DataTable data={getTableData} />
@@ -378,9 +348,9 @@ useEffect(() => {
             </Card>
             <Card className='col-span-1 lg:col-span-3'>
               <CardHeader>
-                <CardTitle>Calendar</CardTitle>
+                <CardTitle>Practice Calendar</CardTitle>
                 <CardDescription>
-                  Schedule and track your Progress
+                  Track your daily coding practice and streaks
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -388,10 +358,6 @@ useEffect(() => {
               </CardContent>
             </Card>
           </div>
-        </TabsContent>
-
-        <TabsContent value='analytics' className='space-y-4'>
-          <Analytics />
         </TabsContent>
           </Tabs>
         </div>

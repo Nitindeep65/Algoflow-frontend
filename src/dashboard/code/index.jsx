@@ -10,6 +10,7 @@ import { getQuestionById } from '../data/questions-api'
 import { CodePanel } from './components/codePanel'
 import { ResultDrawer } from './components/ResultDrawer'
 import { TestCasePanel } from './components/TestCasePanel'
+import { AIHelpSidebar } from './components/AIHelpSidebar'
 import { CodeExecutionService } from './services/codeExecutionService'
 
 function CodeEditor() {
@@ -28,6 +29,9 @@ function CodeEditor() {
   // Test case execution state
   const [testResults, setTestResults] = useState([])
   const [isRunningTests, setIsRunningTests] = useState(false)
+
+  // AI Help sidebar state
+  const [aiSidebarOpen, setAiSidebarOpen] = useState(false)
 
   useEffect(() => {
     const fetchQuestion = async () => {
@@ -76,10 +80,8 @@ function CodeEditor() {
   };
 
   const handleRunCode = async () => {
-    // First run the tests
     await handleRunTests();
     
-    // Then show results in drawer after a brief delay to ensure state is updated
     setTimeout(() => {
       setDrawerOpen(true);
       setExecutionLoading(true);
@@ -116,7 +118,6 @@ function CodeEditor() {
     try {
       setExecutionLoading(true);
       
-      // Format the custom test case for execution
       const formattedTestCase = {
         input: customTestCase.input,
         expected: JSON.parse(customTestCase.expected)
@@ -125,7 +126,6 @@ function CodeEditor() {
       const result = await CodeExecutionService.executeCode(code, language, [formattedTestCase]);
       
       if (result.success) {
-        // Update the drawer with custom test case result
         const customResult = result.results[0];
         setExecutionResult(prev => ({
           ...prev,
@@ -151,16 +151,13 @@ function CodeEditor() {
   };
 
   const handleSubmitCode = async () => {
-    // First run the tests
     await handleRunTests();
     
-    // Check results after a brief delay
     setTimeout(() => {
       const passedTests = testResults.filter(r => r.passed).length;
       const totalTests = testResults.length;
       
       if (passedTests === totalTests && totalTests > 0) {
-        // All tests passed - simulate submission
         setDrawerOpen(true);
         setExecutionLoading(true);
         
@@ -183,7 +180,6 @@ function CodeEditor() {
           setExecutionLoading(false);
         }, 1500);
       } else {
-        // Some tests failed or no tests available
         const message = totalTests === 0 
           ? 'No test cases available for this question.'
           : `Cannot submit: ${totalTests - passedTests} test case(s) failed. Please fix your code.`;
@@ -194,7 +190,7 @@ function CodeEditor() {
 
   const handleLanguageChange = (newLanguage) => {
     setLanguage(newLanguage);
-    setTestResults([]); // Clear previous test results when language changes
+    setTestResults([]);
   };
 
   return (
@@ -224,6 +220,16 @@ function CodeEditor() {
                 <div className="flex justify-between items-center px-4 py-2 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
                   <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Code</h3>
                   <div className="flex gap-2">
+                    <button 
+                      onClick={() => setAiSidebarOpen(true)}
+                      className="px-3 py-1.5 text-sm font-medium bg-purple-600 dark:bg-purple-500 text-white rounded hover:bg-purple-700 dark:hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1.5"
+                      disabled={executionLoading}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                      </svg>
+                      AI Help
+                    </button>
                     <button 
                       onClick={handleRunCode}
                       className="px-3 py-1.5 text-sm font-medium bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 rounded hover:bg-gray-800 dark:hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
@@ -272,6 +278,15 @@ function CodeEditor() {
         isLoading={executionLoading}
         error={executionError}
         onRunCustomTestCase={handleRunCustomTestCase}
+      />
+
+      {/* AI Help Sidebar */}
+      <AIHelpSidebar
+        isOpen={aiSidebarOpen}
+        onClose={() => setAiSidebarOpen(false)}
+        code={code}
+        question={question}
+        language={language}
       />
     </div>
   )

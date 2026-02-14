@@ -29,7 +29,6 @@ const LoginForm = () => {
 
   localStorage.setItem("token", response.data.token);
   
-  // Redirect based on user role
   if (response.data.user.role === "admin") {
     navigate("/Admin");
   } else {

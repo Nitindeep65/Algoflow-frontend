@@ -36,14 +36,12 @@ function NewProject() {
   const onSubmit = async(e) => {
     e.preventDefault();
     
-    // Validation
     if (!question.type || !question.title || !question.description) {
       alert('Please fill in all required fields (Type, Title, Description)');
       return;
     }
     
     try {
-      // Prepare data for submission
       const submitData = {
         ...question,
         testCases: question.testCases.map(tc => ({
@@ -55,7 +53,6 @@ function NewProject() {
       const response = await axios.post('http://localhost:5001/api/questions/createQuestions', submitData);
       console.log('Question created successfully:', response.data);
       
-      // Reset form after successful submission
       setQuestion({
         title: '',
         description: '',
