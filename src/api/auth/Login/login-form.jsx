@@ -62,8 +62,9 @@ const LoginForm = () => {
     <form className='space-y-5' onSubmit={handleSubmit}>
       {/* Error Message */}
       {error && (
-        <div className='bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded-lg text-sm'>
-          {error}
+        <div className='bg-destructive/10 border border-destructive/30 text-destructive px-4 py-3 rounded-lg text-sm flex items-start gap-2'>
+          <span className='text-lg'>⚠️</span>
+          <span className='flex-1'>{error}</span>
         </div>
       )}
       
@@ -73,14 +74,15 @@ const LoginForm = () => {
           Email address
         </Label>
         <div className='relative'>
-          <Mail className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground' />
+          <Mail className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none' />
           <Input 
             type='email' 
             id='userEmail' 
             placeholder='you@example.com'
-            className='pl-10 h-11 focus-visible:ring-2'
+            className='pl-10 h-11'
             value={formData.email}
             onChange={(e) => setFormData({...formData, email: e.target.value})}
+            disabled={loading}
             required
           />
         </div>
@@ -92,14 +94,15 @@ const LoginForm = () => {
           Password
         </Label>
         <div className='relative'>
-          <Lock className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground' />
+          <Lock className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none' />
           <Input
             id='password'
             type={isVisible ? 'text' : 'password'}
             placeholder='Enter your password'
-            className='pl-10 pr-10 h-11 focus-visible:ring-2'
+            className='pl-10 pr-10 h-11'
             value={formData.password}
             onChange={(e) => setFormData({...formData, password: e.target.value})}
+            disabled={loading}
             required
           />
           <Button
@@ -107,7 +110,8 @@ const LoginForm = () => {
             variant='ghost'
             size='icon'
             onClick={() => setIsVisible(!isVisible)}
-            className='absolute inset-y-0 right-0 h-11 w-10 hover:bg-transparent'>
+            className='absolute inset-y-0 right-0 h-11 w-10 hover:bg-transparent'
+            disabled={loading}>
             {isVisible ? <EyeOffIcon className='h-4 w-4' /> : <EyeIcon className='h-4 w-4' />}
             <span className='sr-only'>{isVisible ? 'Hide password' : 'Show password'}</span>
           </Button>
@@ -115,32 +119,39 @@ const LoginForm = () => {
       </div>
 
       {/* Remember Me and Forgot Password */}
-      <div className='flex items-center justify-between'>
+      <div className='flex items-center justify-between text-sm'>
         <div className='flex items-center gap-2'>
           <Checkbox 
             id='rememberMe' 
             checked={formData.rememberMe}
             onCheckedChange={(checked) => setFormData({...formData, rememberMe: checked})}
+            disabled={loading}
           />
           <Label 
             htmlFor='rememberMe' 
-            className='text-sm font-normal cursor-pointer'
+            className='font-normal cursor-pointer'
           >
             Remember me
           </Label>
         </div>
-        <a href='#' className='text-sm font-medium text-primary hover:underline'>
+        <a href='#' className='font-medium text-primary hover:underline'>
           Forgot password?
         </a>
       </div>
 
       <Button 
-        onClick={handleSubmit} 
         className='w-full h-11 text-base font-medium' 
         type='submit'
         disabled={loading}
       >
-        {loading ? 'Signing in...' : 'Sign In'}
+        {loading ? (
+          <>
+            <span className='animate-spin mr-2'>⏳</span>
+            Signing in...
+          </>
+        ) : (
+          'Sign In'
+        )}
       </Button>
     </form>
   )

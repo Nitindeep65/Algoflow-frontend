@@ -102,14 +102,15 @@ const handleSubmit = async (e) => {
           Full Name
         </Label>
         <div className='relative'>
-          <User className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground' />
+          <User className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none' />
           <Input 
             type='text' 
             id='userName' 
             placeholder='John Doe'
-            className='pl-10 h-11 focus-visible:ring-2'
+            className='pl-10 h-11'
             value={formData.name}
             onChange={(e) => setFormData({...formData, name: e.target.value})}
+            disabled={isLoading}
             required
           />
         </div>
@@ -121,14 +122,15 @@ const handleSubmit = async (e) => {
           Email address
         </Label>
         <div className='relative'>
-          <Mail className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground' />
+          <Mail className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none' />
           <Input 
             type='email' 
             id='userEmail' 
             placeholder='you@example.com'
-            className='pl-10 h-11 focus-visible:ring-2'
+            className='pl-10 h-11'
             value={formData.email}
             onChange={(e) => setFormData({...formData, email: e.target.value})}
+            disabled={isLoading}
             required
           />
         </div>
@@ -140,14 +142,15 @@ const handleSubmit = async (e) => {
           Password
         </Label>
         <div className='relative'>
-          <Lock className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground' />
+          <Lock className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none' />
           <Input
             id='password'
             type={isVisible ? 'text' : 'password'}
             placeholder='Create a strong password'
-            className='pl-10 pr-10 h-11 focus-visible:ring-2'
+            className='pl-10 pr-10 h-11'
             value={formData.password}
             onChange={(e) => setFormData({...formData, password: e.target.value})}
+            disabled={isLoading}
             required
           />
           <Button
@@ -155,17 +158,18 @@ const handleSubmit = async (e) => {
             variant='ghost'
             size='icon'
             onClick={() => setIsVisible(!isVisible)}
-            className='absolute inset-y-0 right-0 h-11 w-10 hover:bg-transparent'>
+            className='absolute inset-y-0 right-0 h-11 w-10 hover:bg-transparent'
+            disabled={isLoading}>
             {isVisible ? <EyeOffIcon className='h-4 w-4' /> : <EyeIcon className='h-4 w-4' />}
           </Button>
         </div>
         {formData.password && passwordStrength.strength > 0 && (
-          <div className='space-y-1'>
+          <div className='space-y-1.5'>
             <div className='flex gap-1'>
               {[1, 2, 3, 4].map((level) => (
                 <div
                   key={level}
-                  className={`h-1 flex-1 rounded-full transition-colors ${
+                  className={`h-1.5 flex-1 rounded-full transition-colors ${
                     level <= passwordStrength.strength ? passwordStrength.color : 'bg-muted'
                   }`}
                 />
@@ -184,14 +188,15 @@ const handleSubmit = async (e) => {
           Confirm Password
         </Label>
         <div className='relative'>
-          <Lock className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground' />
+          <Lock className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none' />
           <Input
             id='confirmPassword'
             type={isConfirmVisible ? 'text' : 'password'}
             placeholder='Re-enter your password'
-            className='pl-10 pr-10 h-11 focus-visible:ring-2'
+            className='pl-10 pr-10 h-11'
             value={formData.confirmPassword}
             onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+            disabled={isLoading}
             required
           />
           <Button
@@ -199,29 +204,35 @@ const handleSubmit = async (e) => {
             variant='ghost'
             size='icon'
             onClick={() => setIsConfirmVisible(!isConfirmVisible)}
-            className='absolute inset-y-0 right-0 h-11 w-10 hover:bg-transparent'>
+            className='absolute inset-y-0 right-0 h-11 w-10 hover:bg-transparent'
+            disabled={isLoading}>
             {isConfirmVisible ? <EyeOffIcon className='h-4 w-4' /> : <EyeIcon className='h-4 w-4' />}
           </Button>
           {passwordsMatch && (
-            <CheckCircle2 className='absolute right-12 top-1/2 -translate-y-1/2 h-4 w-4 text-green-500' />
+            <CheckCircle2 className='absolute right-12 top-1/2 -translate-y-1/2 h-4 w-4 text-green-500 pointer-events-none' />
           )}
         </div>
         {formData.confirmPassword && !passwordsMatch && (
-          <p className='text-xs text-red-500'>Passwords do not match</p>
+          <p className='text-xs text-destructive flex items-center gap-1'>
+            <span>⚠</span>
+            Passwords do not match
+          </p>
         )}
       </div>
 
       {/* Terms and Conditions */}
-      <div className='flex items-start gap-2 pt-2'>
+      <div className='flex items-start gap-2.5 pt-1'>
         <Checkbox 
           id='agreeToTerms'
           checked={formData.agreeToTerms}
           onCheckedChange={(checked) => setFormData({...formData, agreeToTerms: checked})}
+          disabled={isLoading}
           required
+          className='mt-0.5'
         />
         <Label 
           htmlFor='agreeToTerms' 
-          className='text-sm font-normal leading-relaxed cursor-pointer'
+          className='text-sm font-normal leading-tight cursor-pointer'
         >
           I agree to the{' '}
           <a href='#' className='text-primary hover:underline font-medium'>
@@ -239,7 +250,14 @@ const handleSubmit = async (e) => {
         type='submit'
         disabled={!formData.agreeToTerms || !passwordsMatch || isLoading}
       >
-        {isLoading ? 'Creating Account...' : 'Create Account'}
+        {isLoading ? (
+          <>
+            <span className='animate-spin mr-2'>⏳</span>
+            Creating Account...
+          </>
+        ) : (
+          'Create Account'
+        )}
       </Button>
     </form>
   )
